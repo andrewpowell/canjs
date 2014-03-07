@@ -1,5 +1,6 @@
 @page can.view.bindings
 @parent canjs
+@link ../docco/bindings.html docco
 
 Provides template event bindings and two-way bindings. 
 
