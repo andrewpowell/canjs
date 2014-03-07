@@ -1,61 +1,14 @@
 steal("can/util", "can/view/mustache", "can/control", function (can) {
 
-	/**
-	 * @function can.view.bindings.can-value can-value
-	 * @parent can.view.bindings
-	 *
-	 * Sets up two way bindings in a template.
-	 *
-	 * @signature `can-value='KEY'`
-	 *
-	 * Binds the element's value or checked property to the value specified by
-	 * key. Example:
-	 *
-	 *     <input type='text' can-value='first.name'/>
-	 *
-	 * @param {can.Mustache.key} key A named value in the current scope.
-	 *
-	 * @body
-	 *
-	 * ## Use
-	 *
-	 * Add a `can-value="KEY"` attribute to an input or select element and
-	 * the element's value will be cross-bound to an observable value specified by `KEY`.
-	 *
-	 * Depending on the element and the element's type, `can-value` takes on
-	 * different behaviors.  If an input element has a type
-	 * not listed here, the behavior is the same as the `text` type.
-	 *
-	 * ## input type=text
-	 *
-	 * Cross binds the input's string text value with the observable value.
-	 *
-	 * @demo can/view/bindings/hyperloop.html
-	 *
-	 * ## input type=checkbox
-	 *
-	 * Cross binds the checked property to a true or false value. An alternative
-	 * true and false value can be specified by setting `can-true-value` and
-	 * `can-false-value` attributes.
-	 *
-	 * @demo can/view/bindings/input-checkbox.html
-	 *
-	 * ## input type='radio'
-	 *
-	 * If the radio element is checked, sets the observable specified by `can-value` to match the value of
-	 * `value` attribute.
-	 *
-	 * @demo can/view/bindings/input-radio.html
-	 *
-	 * ## select
-	 *
-	 * Cross binds the selected option value with an observable value.
-	 *
-	 * @demo can/view/bindings/select.html
-	 *
-	 */
-	can.view.attr("can-value", function (el, data) {
+	// # bindings.js
+	// `can.view.bindings`: template event bindings and two-way bindings
 
+	// Register the can-value special attribute
+	// Usage: <input can-value="name" />
+	// When a view engine finds this attribute, it will call this callback
+	can.view.attr("can-value", function (el, data) {
+		
+		// What is the value of this attribute?
 		var attr = el.getAttribute("can-value"),
 			value = data.scope.computeData(attr, {
 				args: []
@@ -64,8 +17,13 @@ steal("can/util", "can/view/mustache", "can/control", function (can) {
 			trueValue,
 			falseValue;
 
+		// Depending on the type of element, this attribute has different behavior
+		// If we're an input type...
 		if (el.nodeName.toLowerCase() === "input") {
 			if (el.type === "checkbox") {
+				// If the element is a checkbox and has an attribute called "can-true-value", 
+				// Set up a compute that toggles the value of the checkbox to "true" based on another attribute.
+				// For example, <input type='checkbox' can-value='foo' can-true-value='trueVal' />
 				if (can.attr.has(el, "can-true-value")) {
 					trueValue = data.scope.compute(el.getAttribute("can-true-value"));
 				} else {
@@ -111,35 +69,6 @@ steal("can/util", "can/view/mustache", "can/control", function (can) {
 		}
 	};
 
-	/**
-	 * @function can.view.bindings.can-EVENT can-EVENT
-	 * @parent can.view.bindings
-	 *
-	 * @signature `can-EVENT='KEY'`
-	 *
-	 * Specify a callback function to be called on a particular event.
-	 *
-	 * @param {String} EVENT A event name like `click` or `keyup`.  If you are
-	 * using jQuery, you can listen to jQuery special events too.
-	 *
-	 * @param {can.Mustache.key} key A named value in the current scope.  The value
-	 * should be a function.
-	 *
-	 * @body
-	 *
-	 * ## Use
-	 *
-	 * By adding `can-EVENT='KEY'` to an element, the function pointed to
-	 * by `KEY` is bound to the element's `EVENT` event. The function
-	 * is called back with:
-	 *
-	 *  - `context` - the context of the element
-	 *  - `element` - the element that was bound
-	 *  - `event` - the event that was triggered
-	 *
-	 * @demo can/view/bindings/can-event.html
-	 *
-	 */
 	can.view.attr(/can-[\w\.]+/, function (el, data) {
 
 		var attributeName = data.attributeName,
